@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Build-a-blog</title>
+    <link rel = "stylesheet" href="/static/css/bootstrap.min.css">
+  </head>
+<nav>
+  <p> New Post</p>
+  <p> Home</p>
+</nav>
+  <body>
+    <h1><a href="/blog">Blog</a></h1>
+    {% block content %}
+
+    {% for post in posts %}
+    <h2>
+      <div class="txt-title">
+
+        <a href="/blog/{{post.key().id()}}">{{post.title}}</a></div>
+    </h2>
+    {% endfor %}
+      {% endblock %}
+  </body>
+  <footer aria-label="...">
+    <ul class="pager">
+      <li><a href="#">Previous</a></li>
+      <li><a href="#">Next</a></li>
+    </ul>
+  </footer>
+</html>
