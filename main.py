@@ -27,11 +27,8 @@ class Post(db.Model):
 
 class MainPage(Handler):
     def get(self):
-
         posts = db.GqlQuery("SELECT * FROM Post "
-                               "ORDER BY created DESC "
-                               "LIMIT 5"
-                               )
+                               "ORDER BY created DESC ")
 
         self.render("main.html", posts=posts)
 
@@ -39,7 +36,8 @@ class MainPage(Handler):
 class NewPost(Handler):
     def render_front(self, title ="", txt="", error=""):
         posts = db.GqlQuery("SELECT * FROM Post "
-                               "ORDER BY created DESC "
+                            "ORDER BY created DESC "
+                            "LIMIT 5"
                                )
         self.render("newpost.html", title=title, txt=txt, error=error, posts=posts)
 
@@ -52,12 +50,14 @@ class NewPost(Handler):
 
         if title and txt:
             # creates new instance of Post
-            a = Post(title = title, txt = txt, key=key)
+            a = Post(title = title, txt = txt)
             #puts new instance in database
             a.put()
             self.render_front()
+            post_id = str(a.key().id())
+            self.redirect("/blog/"+post_id)
         else:
-            error = "we need both a title and a post"
+            error = "Must enter title and text"
             self.render_front(title, txt, error)
 
 class ViewPostHandler(Handler):
@@ -70,6 +70,6 @@ class ViewPostHandler(Handler):
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
-    ('/blog/newpost', NewPost),
+    ('/newpost', NewPost),
     webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)
