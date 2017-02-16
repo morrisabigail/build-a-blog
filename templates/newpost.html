@@ -1,13 +1,15 @@
 {% extends "main.html" %}
-
 {% block content %}
 
-    <form action = "/newpost" method="post">
+<h3>{{heading}}</h3>
+
+
+    <form action = "/blog/newpost" method="post">
       <label>
         <div>title</div>
         <input type="text" name ="title" value="{{title}}">
       </label>
-
+      <br>
         <label>
           <div>text</div>
           <textarea name ="txt">{{txt}}</textarea>

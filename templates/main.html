@@ -3,35 +3,36 @@
   <head>
     <title>Build-a-blog</title>
     <link type="text/css" rel="stylesheet" href="/static/bootstrap.css">
-
   </head>
-  <nav>
-    <ul class="nav nav-pills">
-      <li role="presentation" class="active"><a href="#">Home</a></li>
-      <li role="presentation"><a href="#">New Post</a></li>
-
-    </ul>
-  </nav>
   <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="/static/bootstrap.js"></script>
 
-    <h1><a href="#">Blog</a></h1>
-    {% block content %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="/static/bootstrap.js"></script>
 
-    {% for post in posts %}
-    <h2>
-      <div class="txt-title">
+    <div class = "container">
+      <nav>
 
-        <a href="blog/{{post.key().id()}}">{{post.title}}</a></div>
-    </h2>
-    {% endfor %}
-      {% endblock %}
+            <li><a href="/blog">Home</a></li>
+            <!-- <li><a href="/blog/allposts">All Posts</a></li> -->
+            <li><a href="/blog/newpost">New Post</a></li>
+            <!-- <li><a href="/blog/login">Login</a></li> -->
+
+      </nav>
+        {% block content %}
+      <h1>{{heading}}</h1>
+
+
+      {% for post in posts %}
+      <h2>
+        <div class="txt-title">
+
+          <a href="blog/{{post.key().id()}}">{{post.title}}</a>
+        </div>
+      </h2>
+
+      {% endfor %}
+      {% endblock%}
+    </div>
+
   </body>
-  <footer aria-label="...">
-    <ul class="pager">
-      <li><a href="#">Previous</a></li>
-      <li><a href="#">Next</a></li>
-    </ul>
-  </footer>
 </html>

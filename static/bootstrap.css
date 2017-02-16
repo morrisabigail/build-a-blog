@@ -10,7 +10,19 @@ html {
       -ms-text-size-adjust: 100%;
 }
 body {
+  display:block;
   margin: 0;
+}
+.error{
+  color: #ff0039;
+}
+nav li{
+  padding: 10px;
+  list-style:none;
+  display:inline-block;
+}
+.txt-title{
+  font-size:20px;
 }
 article,
 aside,

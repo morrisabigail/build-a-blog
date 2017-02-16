@@ -8,6 +8,15 @@ from google.appengine.ext import db
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape= True)
 
+# limit = 5
+# def get_posts(limit, offset):
+#
+#     # return posts
+#     #self.render("main.html", posts=posts, prev=prev, nxt=nxt)
+#     #posts.count(offset=offset, limit=page_size)
+# def get_current_page():
+#
+#     #TODO:returns current page in # format
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -27,19 +36,26 @@ class Post(db.Model):
 
 class MainPage(Handler):
     def get(self):
-        posts = db.GqlQuery("SELECT * FROM Post "
-                               "ORDER BY created DESC ")
 
-        self.render("main.html", posts=posts)
+        posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC LIMIT 5")
+
+
+        # posts.count(limit=limit, offset=offset) # returns TOTAL # of entities
+        # if get_current_page == 0:
+        #     offset = 0
+        # else:
+        #     offset = (page_num - 1 ) * items_per_page
+
+        self.render("main.html", posts=posts, heading = "My Blog")
 
 
 class NewPost(Handler):
     def render_front(self, title ="", txt="", error=""):
         posts = db.GqlQuery("SELECT * FROM Post "
                             "ORDER BY created DESC "
-                            "LIMIT 5"
+
                                )
-        self.render("newpost.html", title=title, txt=txt, error=error, posts=posts)
+        self.render("newpost.html", title=title, txt=txt, error=error, posts=posts,heading="New Post")
 
     def get(self):
         self.render_front()
@@ -50,11 +66,11 @@ class NewPost(Handler):
 
         if title and txt:
             # creates new instance of Post
-            a = Post(title = title, txt = txt)
+            post = Post(title = title, txt = txt)
             #puts new instance in database
-            a.put()
+            post.put()
             self.render_front()
-            post_id = str(a.key().id())
+            post_id = str(post.key().id())
             self.redirect("/blog/"+post_id)
         else:
             error = "Must enter title and text"
@@ -64,12 +80,14 @@ class ViewPostHandler(Handler):
     def get(self, id):
         post_id = Post.get_by_id(int(id))
         if not post_id:
-            self.redirect("/blog/?error=")
+            error = "Sorry, we couldn't find what you were looking for"
+            self.redirect("/blog?error="+ error)
         self.render("viewpost.html", post_id = post_id)
 
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
-    ('/newpost', NewPost),
+    # ('/blog?page=')
+    ('/blog/newpost', NewPost),
     webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)
